@@ -8,16 +8,14 @@ handle missing dictionary keys gracefully and don't cause runtime errors.
 
 import sys
 import unittest
-from pathlib import Path
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from pcileechfwgenerator.templating.tcl_builder import (
     BuildContext,
     TCLBuilder,
-    PCIE_SPEED_CODES,
 )
+
+# Add parent directory to path for imports
+
 
 # Note: SystemVerilog generator tests are optional - the class name may vary
 
@@ -165,21 +163,26 @@ class TestImportResilience(unittest.TestCase):
     def test_tcl_builder_imports(self):
         """Test that TCL builder can be imported."""
         try:
-            from pcileechfwgenerator.templating.tcl_builder import TCLBuilder
+            from pcileechfwgenerator.templating.tcl_builder import (
+                BuildContext,
+                TCLBuilder,
+            )
 
-            self.assertTrue(True)
+            self.assertIsNotNone(TCLBuilder)
+            self.assertIsNotNone(BuildContext)
         except ImportError as e:
             self.fail(f"Failed to import TCLBuilder: {e}")
 
     def test_systemverilog_generator_imports(self):
         """Test that SystemVerilog generator module can be imported."""
         try:
-            # Just test that the module itself can be imported
-            import pcileechfwgenerator.templating.systemverilog_generator
+            from pcileechfwgenerator.templating.sv_overlay_generator import (
+                SVOverlayGenerator,
+            )
 
-            self.assertTrue(True)
+            self.assertIsNotNone(SVOverlayGenerator)
         except ImportError as e:
-            # This is not critical - the module might not be available in all environments
+            # Not critical - the module might not be available in all environments
             print(f"Note: SystemVerilog generator module not available: {e}")
             self.skipTest("SystemVerilog generator module not available")
 
